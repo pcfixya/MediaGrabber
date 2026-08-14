@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextDirection
 import com.google.android.material.color.MaterialColors
+import com.junkfood.seal.ui.common.LocalEmberDarkMode
 import com.junkfood.seal.ui.common.LocalFixedColorRoles
 import com.junkfood.seal.ui.common.LocalGradientDarkMode
 import com.kyant.monet.LocalTonalPalettes
@@ -39,6 +40,7 @@ fun SealTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     isHighContrastModeEnabled: Boolean = false,
     isGradientDarkEnabled: Boolean = LocalGradientDarkMode.current,
+    isEmberDarkEnabled: Boolean = LocalEmberDarkMode.current,
     content: @Composable () -> Unit,
 ) {
     val view = LocalView.current
@@ -62,6 +64,34 @@ fun SealTheme(
     val colorScheme =
         dynamicColorScheme(!darkTheme).run {
             when {
+                // Ember Dark mode overrides all other themes
+                isEmberDarkEnabled && darkTheme -> copy(
+                    primary = EmberDarkColors.GradientPrimaryEnd,
+                    onPrimary = EmberDarkColors.OnPrimary,
+                    primaryContainer = EmberDarkColors.GradientPrimaryStart,
+                    onPrimaryContainer = EmberDarkColors.OnPrimary,
+                    secondary = EmberDarkColors.GradientSecondaryEnd,
+                    onSecondary = EmberDarkColors.OnSecondary,
+                    secondaryContainer = EmberDarkColors.GradientSecondaryStart,
+                    onSecondaryContainer = EmberDarkColors.OnSecondary,
+                    tertiary = EmberDarkColors.GradientAccentEnd,
+                    onTertiary = EmberDarkColors.OnPrimary,
+                    tertiaryContainer = EmberDarkColors.GradientAccentStart,
+                    onTertiaryContainer = EmberDarkColors.OnPrimary,
+                    background = EmberDarkColors.Background,
+                    onBackground = EmberDarkColors.OnBackground,
+                    surface = EmberDarkColors.Surface,
+                    onSurface = EmberDarkColors.OnSurface,
+                    surfaceVariant = EmberDarkColors.SurfaceVariant,
+                    onSurfaceVariant = EmberDarkColors.OnSurfaceVariant,
+                    surfaceContainer = EmberDarkColors.SurfaceContainer,
+                    surfaceContainerLow = EmberDarkColors.SurfaceContainerLow,
+                    surfaceContainerHigh = EmberDarkColors.SurfaceContainerHigh,
+                    surfaceContainerLowest = EmberDarkColors.Background,
+                    surfaceContainerHighest = EmberDarkColors.SurfaceContainerHigh,
+                    outline = EmberDarkColors.GlassWhiteBorder,
+                    outlineVariant = EmberDarkColors.GlassSurface,
+                )
                 // Gradient Dark mode overrides all other themes
                 isGradientDarkEnabled && darkTheme -> copy(
                     primary = GradientDarkColors.GradientPrimaryEnd,

@@ -27,6 +27,7 @@ import androidx.compose.material.icons.outlined.Colorize
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.LightMode
+import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
@@ -223,12 +224,32 @@ fun AppearancePreferences(onNavigateBack: () -> Unit, onNavigateTo: (String) -> 
                     onClick = { onNavigateTo(Route.DARK_THEME) },
                 )
                 if (isDarkTheme) {
+                    val accentTheme = com.junkfood.seal.ui.common.LocalAccentTheme.current
                     PreferenceSwitch(
                         title = "Gradient Dark",
-                        description = "Premium dark mode with vibrant gradients and glassmorphism effects",
+                        description = "Premium dark mode with vibrant purple/blue gradients and glassmorphism effects",
                         icon = Icons.Outlined.DarkMode,
-                        isChecked = com.junkfood.seal.ui.common.LocalGradientDarkMode.current,
-                        onClick = { PreferenceUtil.switchGradientDarkMode() },
+                        isChecked = accentTheme == com.junkfood.seal.util.AccentTheme.GRADIENT_DARK,
+                        onClick = {
+                            PreferenceUtil.setAccentTheme(
+                                if (accentTheme == com.junkfood.seal.util.AccentTheme.GRADIENT_DARK)
+                                    com.junkfood.seal.util.AccentTheme.OFF
+                                else com.junkfood.seal.util.AccentTheme.GRADIENT_DARK
+                            )
+                        },
+                    )
+                    PreferenceSwitch(
+                        title = "Ember Dark",
+                        description = "Neon dark mode with orange/red gradients and glassmorphism effects",
+                        icon = Icons.Outlined.LocalFireDepartment,
+                        isChecked = accentTheme == com.junkfood.seal.util.AccentTheme.EMBER_DARK,
+                        onClick = {
+                            PreferenceUtil.setAccentTheme(
+                                if (accentTheme == com.junkfood.seal.util.AccentTheme.EMBER_DARK)
+                                    com.junkfood.seal.util.AccentTheme.OFF
+                                else com.junkfood.seal.util.AccentTheme.EMBER_DARK
+                            )
+                        },
                     )
                 }
                 PreferenceItem(

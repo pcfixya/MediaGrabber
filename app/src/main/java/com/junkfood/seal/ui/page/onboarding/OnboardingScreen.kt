@@ -34,8 +34,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.junkfood.seal.ui.common.LocalDarkTheme
-import com.junkfood.seal.ui.theme.GradientBrushes
-import com.junkfood.seal.ui.theme.GradientDarkColors
+import com.junkfood.seal.ui.theme.currentAccentBrushes
+import com.junkfood.seal.ui.theme.currentAccentColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -58,31 +58,33 @@ fun OnboardingScreen(
     onFinish: () -> Unit
 ) {
     val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
-    
+    val accentColors = currentAccentColors()
+    val accentBrushes = currentAccentBrushes()
+
     val pages = listOf(
         OnboardingPage(
             icon = Icons.Filled.VideoLibrary,
             title = "Welcome to MediaGrabber",
             description = "Your ultimate video downloader powered by yt-dlp. Download videos, audio, and playlists from your favorite platforms with ease.",
-            gradient = GradientBrushes.Primary
+            gradient = accentBrushes.Primary
         ),
         OnboardingPage(
             icon = Icons.Filled.Download,
             title = "Powerful Downloads",
             description = "Download in multiple formats and quality options. Choose from video, audio-only, or custom formats with advanced configuration.",
-            gradient = GradientBrushes.Secondary
+            gradient = accentBrushes.Secondary
         ),
         OnboardingPage(
             icon = Icons.Filled.Settings,
             title = "Highly Customizable",
             description = "Extensive settings to personalize your experience. Control download directory, network preferences, themes, and much more.",
-            gradient = GradientBrushes.Accent
+            gradient = accentBrushes.Accent
         ),
         OnboardingPage(
             icon = Icons.Filled.Security,
             title = "Privacy & Security",
             description = "Your downloads are private and secure. Optional app lock with PIN or biometric authentication keeps your content safe.",
-            gradient = GradientBrushes.Vibrant
+            gradient = accentBrushes.Vibrant
         )
     )
     
@@ -93,7 +95,7 @@ fun OnboardingScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                if (isDarkTheme) GradientDarkColors.Background
+                if (isDarkTheme) accentColors.Background
                 else MaterialTheme.colorScheme.background
             )
     ) {
@@ -126,7 +128,7 @@ fun OnboardingScreen(
                         Text(
                             text = "Skip",
                             color = if (isDarkTheme) 
-                                GradientDarkColors.OnSurface.copy(alpha = 0.7f)
+                                accentColors.OnSurface.copy(alpha = 0.7f)
                             else 
                                 MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -182,7 +184,7 @@ fun OnboardingScreen(
                             colors = ButtonDefaults.outlinedButtonColors(
                                 containerColor = Color.Transparent,
                                 contentColor = if (isDarkTheme)
-                                    GradientDarkColors.GradientPrimaryEnd
+                                    accentColors.GradientPrimaryEnd
                                 else
                                     MaterialTheme.colorScheme.primary
                             )
@@ -211,7 +213,7 @@ fun OnboardingScreen(
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if (isDarkTheme)
-                                GradientDarkColors.GradientPrimaryEnd
+                                accentColors.GradientPrimaryEnd
                             else
                                 MaterialTheme.colorScheme.primary
                         )
@@ -250,6 +252,7 @@ fun OnboardingPageContent(
     page: OnboardingPage,
     isDarkTheme: Boolean
 ) {
+    val accentColors = currentAccentColors()
     // Animation states
     var visible by remember { mutableStateOf(false) }
     
@@ -307,7 +310,7 @@ fun OnboardingPageContent(
                     .clip(CircleShape)
                     .background(
                         if (isDarkTheme)
-                            GradientDarkColors.SurfaceContainer
+                            accentColors.SurfaceContainer
                         else
                             MaterialTheme.colorScheme.surfaceContainerHigh
                     )
@@ -334,7 +337,7 @@ fun OnboardingPageContent(
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             color = if (isDarkTheme)
-                GradientDarkColors.OnBackground
+                accentColors.OnBackground
             else
                 MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(horizontal = 32.dp)
@@ -349,7 +352,7 @@ fun OnboardingPageContent(
             textAlign = TextAlign.Center,
             lineHeight = 24.sp,
             color = if (isDarkTheme)
-                GradientDarkColors.OnSurface.copy(alpha = 0.7f)
+                accentColors.OnSurface.copy(alpha = 0.7f)
             else
                 MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 32.dp)
@@ -366,6 +369,7 @@ fun PageIndicators(
     currentPage: Int,
     isDarkTheme: Boolean
 ) {
+    val accentColors = currentAccentColors()
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -396,7 +400,7 @@ fun PageIndicators(
                     .alpha(alpha)
                     .background(
                         if (isDarkTheme)
-                            GradientDarkColors.GradientPrimaryEnd
+                            accentColors.GradientPrimaryEnd
                         else
                             MaterialTheme.colorScheme.primary
                     )
@@ -414,7 +418,8 @@ fun AnimatedBackgroundGradient(
     isDarkTheme: Boolean
 ) {
     if (!isDarkTheme) return
-    
+    val accentColors = currentAccentColors()
+
     val infiniteTransition = rememberInfiniteTransition(label = "backgroundGradient")
     
     val rotation by infiniteTransition.animateFloat(
@@ -441,7 +446,7 @@ fun AnimatedBackgroundGradient(
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            GradientDarkColors.GradientPrimaryEnd.copy(alpha = 0.6f),
+                            accentColors.GradientPrimaryEnd.copy(alpha = 0.6f),
                             Color.Transparent
                         )
                     ),
@@ -459,7 +464,7 @@ fun AnimatedBackgroundGradient(
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            GradientDarkColors.GradientAccentEnd.copy(alpha = 0.5f),
+                            accentColors.GradientAccentEnd.copy(alpha = 0.5f),
                             Color.Transparent
                         )
                     ),
@@ -480,7 +485,7 @@ fun AnimatedBackgroundGradient(
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            GradientDarkColors.GradientSecondaryEnd.copy(alpha = 0.4f),
+                            accentColors.GradientSecondaryEnd.copy(alpha = 0.4f),
                             Color.Transparent
                         )
                     ),

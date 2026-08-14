@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
@@ -20,49 +21,55 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.junkfood.seal.ui.common.LocalEmberDarkMode
 
 /**
  * Gradient Dark Theme Color Palette
  * Deep charcoal and obsidian backgrounds with vibrant linear gradients
  */
-object GradientDarkColors {
+object GradientDarkColors : AccentColorPalette {
     // Deep Charcoal and Obsidian Backgrounds
-    val Background = Color(0xFF0A0A0F)
-    val Surface = Color(0xFF14141F)
-    val SurfaceVariant = Color(0xFF1A1A2E)
-    val SurfaceContainer = Color(0xFF1E1E2F)
-    val SurfaceContainerLow = Color(0xFF16162A)
-    val SurfaceContainerHigh = Color(0xFF25253A)
-    
+    override val Background = Color(0xFF0A0A0F)
+    override val Surface = Color(0xFF14141F)
+    override val SurfaceVariant = Color(0xFF1A1A2E)
+    override val SurfaceContainer = Color(0xFF1E1E2F)
+    override val SurfaceContainerLow = Color(0xFF16162A)
+    override val SurfaceContainerHigh = Color(0xFF25253A)
+
     // Vibrant Gradient Colors - Deep Blues and Purples
-    val GradientPrimaryStart = Color(0xFF5B47E5)
-    val GradientPrimaryEnd = Color(0xFF8B5CF6)
-    val GradientSecondaryStart = Color(0xFF3B82F6)
-    val GradientSecondaryEnd = Color(0xFF6366F1)
-    val GradientAccentStart = Color(0xFFA855F7)
-    val GradientAccentEnd = Color(0xFFEC4899)
-    
+    override val GradientPrimaryStart = Color(0xFF5B47E5)
+    override val GradientPrimaryEnd = Color(0xFF8B5CF6)
+    override val GradientSecondaryStart = Color(0xFF3B82F6)
+    override val GradientSecondaryEnd = Color(0xFF6366F1)
+    override val GradientAccentStart = Color(0xFFA855F7)
+    override val GradientAccentEnd = Color(0xFFEC4899)
+
     // Glassmorphism Colors
-    val GlassWhiteBorder = Color(0x1AFFFFFF)
-    val GlassSurface = Color(0x0DFFFFFF)
-    val GlassSurfaceVariant = Color(0x1AFFFFFF)
-    
+    override val GlassWhiteBorder = Color(0x1AFFFFFF)
+    override val GlassSurface = Color(0x0DFFFFFF)
+    override val GlassSurfaceVariant = Color(0x1AFFFFFF)
+
     // Text Colors
-    val OnBackground = Color(0xFFFAFAFA)
-    val OnSurface = Color(0xFFF5F5F5)
-    val OnPrimary = Color(0xFFFFFFFF)
-    
+    override val OnBackground = Color(0xFFFAFAFA)
+    override val OnSurface = Color(0xFFF5F5F5)
+    override val OnSurfaceVariant = OnSurface
+    override val OnPrimary = Color(0xFFFFFFFF)
+    override val OnSecondary = OnPrimary
+
     // Additional Accent Colors
     val GradientCyan = Color(0xFF22D3EE)
     val GradientPurpleBright = Color(0xFFC084FC)
     val GradientBlueBright = Color(0xFF60A5FA)
+    override val BrightAccent1 = GradientCyan
+    override val BrightAccent2 = GradientPurpleBright
+    override val BrightAccent3 = GradientBlueBright
 }
 
 /**
  * Gradient Brushes for primary, secondary, and accent colors
  */
-object GradientBrushes {
-    val Primary = Brush.linearGradient(
+object GradientBrushes : AccentBrushPalette {
+    override val Primary = Brush.linearGradient(
         colors = listOf(
             GradientDarkColors.GradientPrimaryStart,
             GradientDarkColors.GradientPrimaryEnd
@@ -70,8 +77,8 @@ object GradientBrushes {
         start = Offset.Zero,
         end = Offset.Infinite
     )
-    
-    val Secondary = Brush.linearGradient(
+
+    override val Secondary = Brush.linearGradient(
         colors = listOf(
             GradientDarkColors.GradientSecondaryStart,
             GradientDarkColors.GradientSecondaryEnd,
@@ -80,8 +87,8 @@ object GradientBrushes {
         start = Offset.Zero,
         end = Offset.Infinite
     )
-    
-    val Accent = Brush.linearGradient(
+
+    override val Accent = Brush.linearGradient(
         colors = listOf(
             GradientDarkColors.GradientAccentStart,
             GradientDarkColors.GradientAccentEnd
@@ -89,8 +96,8 @@ object GradientBrushes {
         start = Offset(0f, 0f),
         end = Offset(Float.POSITIVE_INFINITY, 0f)
     )
-    
-    val Vibrant = Brush.linearGradient(
+
+    override val Vibrant = Brush.linearGradient(
         colors = listOf(
             GradientDarkColors.GradientBlueBright,
             GradientDarkColors.GradientPurpleBright,
@@ -112,16 +119,19 @@ fun GlassCard(
     alpha: Float = 0.05f,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val isEmber = LocalEmberDarkMode.current
+    val glassBorder = if (isEmber) EmberDarkColors.GlassWhiteBorder else GradientDarkColors.GlassWhiteBorder
+    val glassSurface = if (isEmber) EmberDarkColors.GlassSurface else GradientDarkColors.GlassSurface
     Card(
         modifier = modifier
             .border(
                 width = borderWidth,
-                color = GradientDarkColors.GlassWhiteBorder,
+                color = glassBorder,
                 shape = RoundedCornerShape(cornerRadius)
             ),
         shape = RoundedCornerShape(cornerRadius),
         colors = CardDefaults.cardColors(
-            containerColor = GradientDarkColors.GlassSurface.copy(alpha = alpha)
+            containerColor = glassSurface.copy(alpha = alpha)
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = elevation
@@ -165,7 +175,7 @@ fun GlassCardElevated(
 @Composable
 fun GradientSurface(
     modifier: Modifier = Modifier,
-    brush: Brush = GradientBrushes.Primary,
+    brush: Brush = if (LocalEmberDarkMode.current) EmberBrushes.Primary else GradientBrushes.Primary,
     cornerRadius: Dp = 16.dp,
     content: @Composable () -> Unit
 ) {
@@ -221,14 +231,19 @@ fun Modifier.glassmorphism(
     borderWidth: Dp = 1.dp,
     alpha: Float = 0.05f,
     blurRadius: Dp = 16.dp
-): Modifier = this
-    .clip(RoundedCornerShape(cornerRadius))
-    .background(GradientDarkColors.GlassSurface.copy(alpha = alpha))
-    .border(
-        width = borderWidth,
-        color = GradientDarkColors.GlassWhiteBorder,
-        shape = RoundedCornerShape(cornerRadius)
-    )
+): Modifier = composed {
+    val isEmber = LocalEmberDarkMode.current
+    val glassSurface = if (isEmber) EmberDarkColors.GlassSurface else GradientDarkColors.GlassSurface
+    val glassBorder = if (isEmber) EmberDarkColors.GlassWhiteBorder else GradientDarkColors.GlassWhiteBorder
+    this
+        .clip(RoundedCornerShape(cornerRadius))
+        .background(glassSurface.copy(alpha = alpha))
+        .border(
+            width = borderWidth,
+            color = glassBorder,
+            shape = RoundedCornerShape(cornerRadius)
+        )
+}
 
 /**
  * Modifier extension for gradient background

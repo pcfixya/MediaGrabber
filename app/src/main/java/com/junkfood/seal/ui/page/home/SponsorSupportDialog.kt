@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.junkfood.seal.R
-import com.junkfood.seal.ui.theme.GradientDarkColors
+import com.junkfood.seal.ui.theme.currentAccentColors
 import com.junkfood.seal.ui.theme.SealTheme
 
 /**
@@ -71,6 +71,7 @@ fun SponsorSupportDialog(
     onDismiss: () -> Unit,
     onSupport: () -> Unit,
 ) {
+    val accentColors = currentAccentColors()
     // Track whether the composable is "visible" so we can drive the entrance animation
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
@@ -103,8 +104,8 @@ fun SponsorSupportDialog(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            GradientDarkColors.SurfaceContainer.copy(alpha = 0.96f),
-                            GradientDarkColors.SurfaceVariant.copy(alpha = 0.98f),
+                            accentColors.SurfaceContainer.copy(alpha = 0.96f),
+                            accentColors.SurfaceVariant.copy(alpha = 0.98f),
                         )
                     )
                 )
@@ -114,7 +115,7 @@ fun SponsorSupportDialog(
                     brush = Brush.linearGradient(
                         colors = listOf(
                             Color(0x33FFFFFF),
-                            GradientDarkColors.GradientPrimaryEnd.copy(alpha = 0.35f),
+                            accentColors.GradientPrimaryEnd.copy(alpha = 0.35f),
                             Color(0x11FFFFFF),
                         ),
                         start = Offset(0f, 0f),
@@ -131,7 +132,7 @@ fun SponsorSupportDialog(
                     .background(
                         brush = Brush.radialGradient(
                             colors = listOf(
-                                GradientDarkColors.GradientPrimaryEnd.copy(alpha = 0.14f),
+                                accentColors.GradientPrimaryEnd.copy(alpha = 0.14f),
                                 Color.Transparent,
                             )
                         )
@@ -154,8 +155,8 @@ fun SponsorSupportDialog(
                         .background(
                             brush = Brush.linearGradient(
                                 colors = listOf(
-                                    GradientDarkColors.GradientPrimaryStart,
-                                    GradientDarkColors.GradientAccentStart,
+                                    accentColors.GradientPrimaryStart,
+                                    accentColors.GradientAccentStart,
                                 )
                             )
                         ),
@@ -188,8 +189,8 @@ fun SponsorSupportDialog(
                         .background(
                             brush = Brush.horizontalGradient(
                                 colors = listOf(
-                                    GradientDarkColors.GradientPrimaryStart.copy(alpha = 0.30f),
-                                    GradientDarkColors.GradientAccentEnd.copy(alpha = 0.30f),
+                                    accentColors.GradientPrimaryStart.copy(alpha = 0.30f),
+                                    accentColors.GradientAccentEnd.copy(alpha = 0.30f),
                                 )
                             )
                         )
@@ -199,14 +200,14 @@ fun SponsorSupportDialog(
                         Icon(
                             imageVector = Icons.Outlined.AutoAwesome,
                             contentDescription = null,
-                            tint = GradientDarkColors.GradientPrimaryEnd,
+                            tint = accentColors.GradientPrimaryEnd,
                             modifier = Modifier.size(12.dp),
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = stringResource(R.string.sponsor_dialog_subtitle),
                             style = MaterialTheme.typography.labelSmall,
-                            color = GradientDarkColors.GradientPrimaryEnd,
+                            color = accentColors.GradientPrimaryEnd,
                             fontWeight = FontWeight.SemiBold,
                             letterSpacing = 0.5.sp,
                         )
@@ -238,17 +239,17 @@ fun SponsorSupportDialog(
                     SponsorFeatureRow(
                         icon = Icons.Outlined.Update,
                         text = stringResource(R.string.sponsor_feature_updates),
-                        iconColor = GradientDarkColors.GradientSecondaryEnd,
+                        iconColor = accentColors.GradientSecondaryEnd,
                     )
                     SponsorFeatureRow(
                         icon = Icons.Outlined.Speed,
                         text = stringResource(R.string.sponsor_feature_performance),
-                        iconColor = GradientDarkColors.GradientPrimaryEnd,
+                        iconColor = accentColors.GradientPrimaryEnd,
                     )
                     SponsorFeatureRow(
                         icon = Icons.Outlined.Star,
                         text = stringResource(R.string.sponsor_feature_features),
-                        iconColor = GradientDarkColors.GradientAccentStart,
+                        iconColor = accentColors.GradientAccentStart,
                     )
                 }
 
@@ -263,8 +264,8 @@ fun SponsorSupportDialog(
                         .background(
                             brush = Brush.horizontalGradient(
                                 colors = listOf(
-                                    GradientDarkColors.GradientPrimaryStart,
-                                    GradientDarkColors.GradientAccentStart,
+                                    accentColors.GradientPrimaryStart,
+                                    accentColors.GradientAccentStart,
                                 )
                             )
                         ),

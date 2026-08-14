@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.junkfood.seal.ui.theme.DEFAULT_SEED_COLOR
 import com.junkfood.seal.ui.theme.FixedColorRoles
+import com.junkfood.seal.util.AccentTheme
 import com.junkfood.seal.util.DarkThemePreference
 import com.junkfood.seal.util.PreferenceUtil
 import com.junkfood.seal.util.paletteStyles
@@ -27,6 +28,8 @@ val LocalWindowWidthState = staticCompositionLocalOf { WindowWidthSizeClass.Comp
 val LocalDynamicColorSwitch = compositionLocalOf { false }
 val LocalPaletteStyleIndex = compositionLocalOf { 0 }
 val LocalGradientDarkMode = compositionLocalOf { false }
+val LocalEmberDarkMode = compositionLocalOf { false }
+val LocalAccentTheme = compositionLocalOf { AccentTheme.OFF }
 val LocalFixedColorRoles = staticCompositionLocalOf {
     FixedColorRoles.fromColorSchemes(
         lightColors = lightColorScheme(),
@@ -54,6 +57,8 @@ fun SettingsProvider(windowWidthSizeClass: WindowWidthSizeClass, content: @Compo
             LocalWindowWidthState provides windowWidthSizeClass,
             LocalDynamicColorSwitch provides isDynamicColorEnabled,
             LocalGradientDarkMode provides isGradientDarkModeEnabled,
+            LocalEmberDarkMode provides isEmberDarkModeEnabled,
+            LocalAccentTheme provides accentTheme,
             content = content,
         )
     }

@@ -133,6 +133,7 @@ import com.junkfood.seal.download.DownloaderV2
 import com.junkfood.seal.download.Task
 import com.junkfood.seal.ui.common.HapticFeedback.slightHapticFeedback
 import com.junkfood.seal.ui.common.LocalDarkTheme
+import com.junkfood.seal.ui.common.LocalEmberDarkMode
 import com.junkfood.seal.ui.common.LocalGradientDarkMode
 import com.junkfood.seal.ui.common.ThemedIconColors
 import com.junkfood.seal.ui.page.downloadv2.UiAction
@@ -145,7 +146,7 @@ import com.junkfood.seal.ui.page.downloadv2.configure.PlaylistSelectionPage
 import com.junkfood.seal.ui.component.ConfirmButton
 import com.junkfood.seal.ui.component.DismissButton
 import com.junkfood.seal.ui.component.SealDialog
-import com.junkfood.seal.ui.theme.GradientDarkColors
+import com.junkfood.seal.ui.theme.currentAccentColors
 import com.junkfood.seal.util.DatabaseUtil
 import com.junkfood.seal.util.DownloadUtil
 import com.junkfood.seal.util.FileUtil
@@ -1094,6 +1095,8 @@ fun URLInputField(
 ) {
     val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
     val isGradientDark = LocalGradientDarkMode.current
+    val isEmberDark = LocalEmberDarkMode.current
+    val accentColors = currentAccentColors()
     val fullPlaceholder = stringResource(R.string.enter_url_to_download)
 
     // Typewriter animation: reveal characters one by one
@@ -1173,8 +1176,8 @@ fun URLInputField(
                         .size(48.dp)
                         .padding(end = 4.dp),
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (isGradientDark && isDarkTheme) {
-                            GradientDarkColors.GradientPrimaryStart
+                        containerColor = if ((isGradientDark || isEmberDark) && isDarkTheme) {
+                            accentColors.GradientPrimaryStart
                         } else {
                             MaterialTheme.colorScheme.primary
                         }
@@ -1189,8 +1192,8 @@ fun URLInputField(
             }
         },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = if (isGradientDark && isDarkTheme) {
-                GradientDarkColors.GradientPrimaryStart
+            focusedBorderColor = if ((isGradientDark || isEmberDark) && isDarkTheme) {
+                accentColors.GradientPrimaryStart
             } else {
                 MaterialTheme.colorScheme.primary
             },
@@ -1213,6 +1216,8 @@ fun RecentDownloadCard(
 ) {
     val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
     val isGradientDark = LocalGradientDarkMode.current
+    val isEmberDark = LocalEmberDarkMode.current
+    val accentColors = currentAccentColors()
     var showMenu by remember { mutableStateOf(false) }
     // Use produceState so fileExists is re-checked on every recomposition trigger (refreshKey
     // changes on ON_RESUME), and also whenever the video path itself changes.
@@ -1227,8 +1232,8 @@ fun RecentDownloadCard(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isGradientDark && isDarkTheme) {
-                GradientDarkColors.SurfaceVariant
+            containerColor = if ((isGradientDark || isEmberDark) && isDarkTheme) {
+                accentColors.SurfaceVariant
             } else {
                 MaterialTheme.colorScheme.surfaceVariant
             }
@@ -1273,7 +1278,7 @@ fun RecentDownloadCard(
                         Text(
                             text = stringResource(R.string.completed),
                             style = MaterialTheme.typography.bodySmall,
-                            color = if (isGradientDark && isDarkTheme) {
+                            color = if ((isGradientDark || isEmberDark) && isDarkTheme) {
                                 Color(0xFF4ADE80)
                             } else {
                                 MaterialTheme.colorScheme.primary
@@ -1401,6 +1406,8 @@ fun ActiveDownloadCard(
 ) {
     val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
     val isGradientDark = LocalGradientDarkMode.current
+    val isEmberDark = LocalEmberDarkMode.current
+    val accentColors = currentAccentColors()
     var showMenu by remember { mutableStateOf(false) }
     
     val downloadState = state.downloadState
@@ -1511,8 +1518,8 @@ fun ActiveDownloadCard(
     }
     
     val statusColor = when (downloadState) {
-        is Task.DownloadState.Running -> if (isGradientDark && isDarkTheme) {
-            GradientDarkColors.GradientPrimaryStart
+        is Task.DownloadState.Running -> if ((isGradientDark || isEmberDark) && isDarkTheme) {
+            accentColors.GradientPrimaryStart
         } else {
             MaterialTheme.colorScheme.primary
         }
@@ -1540,8 +1547,8 @@ fun ActiveDownloadCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isGradientDark && isDarkTheme) {
-                GradientDarkColors.SurfaceVariant
+            containerColor = if ((isGradientDark || isEmberDark) && isDarkTheme) {
+                accentColors.SurfaceVariant
             } else {
                 MaterialTheme.colorScheme.surfaceVariant
             }
@@ -1612,8 +1619,8 @@ fun ActiveDownloadCard(
                         if (downloadState is Task.DownloadState.Idle || downloadState is Task.DownloadState.ReadyWithInfo) {
                             androidx.compose.material3.Surface(
                                 shape = RoundedCornerShape(4.dp),
-                                color = if (isGradientDark && isDarkTheme) {
-                                    GradientDarkColors.GradientSecondaryStart.copy(alpha = 0.3f)
+                                color = if ((isGradientDark || isEmberDark) && isDarkTheme) {
+                                    accentColors.GradientSecondaryStart.copy(alpha = 0.3f)
                                 } else {
                                     MaterialTheme.colorScheme.secondaryContainer
                                 }
@@ -1621,8 +1628,8 @@ fun ActiveDownloadCard(
                                 Text(
                                     text = stringResource(R.string.queue_status),
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = if (isGradientDark && isDarkTheme) {
-                                        GradientDarkColors.GradientSecondaryEnd
+                                    color = if ((isGradientDark || isEmberDark) && isDarkTheme) {
+                                        accentColors.GradientSecondaryEnd
                                     } else {
                                         MaterialTheme.colorScheme.onSecondaryContainer
                                     },
@@ -1827,7 +1834,7 @@ fun ActiveDownloadCard(
             if (downloadState is Task.DownloadState.Running || downloadState is Task.DownloadState.Paused) {
                 val barColor = when (downloadState) {
                     is Task.DownloadState.Paused -> Color(0xFFFBBF24)
-                    else -> if (isGradientDark && isDarkTheme) GradientDarkColors.GradientPrimaryStart
+                    else -> if ((isGradientDark || isEmberDark) && isDarkTheme) accentColors.GradientPrimaryStart
                             else MaterialTheme.colorScheme.primary
                 }
                 if (progress >= 0) {

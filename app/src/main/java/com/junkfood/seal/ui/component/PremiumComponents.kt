@@ -20,9 +20,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.junkfood.seal.ui.common.LocalEmberDarkMode
 import com.junkfood.seal.ui.common.LocalGradientDarkMode
-import com.junkfood.seal.ui.theme.GradientBrushes
-import com.junkfood.seal.ui.theme.GradientDarkColors
+import com.junkfood.seal.ui.theme.currentAccentBrushes
+import com.junkfood.seal.ui.theme.currentAccentColors
 
 /**
  * Premium Glass Card with gradient dark theme support
@@ -39,6 +40,9 @@ fun PremiumGlassCard(
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     val isGradientDark = LocalGradientDarkMode.current
+    val isEmberDark = LocalEmberDarkMode.current
+    val accentColors = currentAccentColors()
+    val accentBrushes = currentAccentBrushes()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     
@@ -70,24 +74,24 @@ fun PremiumGlassCard(
                 } else Modifier
             )
             .then(
-                if (isGradientDark) {
+                if (isGradientDark || isEmberDark) {
                     Modifier.border(
                         width = 1.dp,
-                        color = GradientDarkColors.GlassWhiteBorder,
+                        color = accentColors.GlassWhiteBorder,
                         shape = RoundedCornerShape(cornerRadius)
                     )
                 } else Modifier
             ),
         shape = RoundedCornerShape(cornerRadius),
         colors = CardDefaults.cardColors(
-            containerColor = if (isGradientDark) {
-                GradientDarkColors.GlassSurface.copy(alpha = 0.05f)
+            containerColor = if (isGradientDark || isEmberDark) {
+                accentColors.GlassSurface.copy(alpha = 0.05f)
             } else {
                 MaterialTheme.colorScheme.surfaceContainer
             }
         ),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isGradientDark) elevation + 2.dp else elevation
+            defaultElevation = if (isGradientDark || isEmberDark) elevation + 2.dp else elevation
         )
     ) {
         Column(
@@ -105,8 +109,8 @@ fun PremiumGlassCard(
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = if (isGradientDark) {
-                                GradientDarkColors.GradientPurpleBright
+                            tint = if (isGradientDark || isEmberDark) {
+                                accentColors.BrightAccent2
                             } else {
                                 MaterialTheme.colorScheme.primary
                             },
@@ -117,8 +121,8 @@ fun PremiumGlassCard(
                         Text(
                             text = title,
                             style = MaterialTheme.typography.titleMedium,
-                            color = if (isGradientDark) {
-                                GradientDarkColors.OnSurface
+                            color = if (isGradientDark || isEmberDark) {
+                                accentColors.OnSurface
                             } else {
                                 MaterialTheme.colorScheme.onSurface
                             }
@@ -133,8 +137,8 @@ fun PremiumGlassCard(
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (isGradientDark) {
-                        GradientDarkColors.OnSurface.copy(alpha = 0.7f)
+                    color = if (isGradientDark || isEmberDark) {
+                        accentColors.OnSurface.copy(alpha = 0.7f)
                     } else {
                         MaterialTheme.colorScheme.onSurfaceVariant
                     }
@@ -158,9 +162,12 @@ fun PremiumGradientButton(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     enabled: Boolean = true,
-    brush: Brush = GradientBrushes.Primary
+    brush: Brush = currentAccentBrushes().Primary
 ) {
     val isGradientDark = LocalGradientDarkMode.current
+    val isEmberDark = LocalEmberDarkMode.current
+    val accentColors = currentAccentColors()
+    val accentBrushes = currentAccentBrushes()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     
@@ -179,7 +186,7 @@ fun PremiumGradientButton(
             .scale(scale)
             .height(56.dp)
             .then(
-                if (isGradientDark) {
+                if (isGradientDark || isEmberDark) {
                     Modifier
                         .clip(RoundedCornerShape(16.dp))
                         .background(brush)
@@ -187,17 +194,17 @@ fun PremiumGradientButton(
             ),
         enabled = enabled,
         interactionSource = interactionSource,
-        colors = if (isGradientDark) {
+        colors = if (isGradientDark || isEmberDark) {
             ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
-                contentColor = GradientDarkColors.OnPrimary
+                contentColor = accentColors.OnPrimary
             )
         } else {
             ButtonDefaults.buttonColors()
         },
         shape = RoundedCornerShape(16.dp),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = if (isGradientDark) 8.dp else 2.dp
+            defaultElevation = if (isGradientDark || isEmberDark) 8.dp else 2.dp
         )
     ) {
         Row(
@@ -231,6 +238,9 @@ fun PremiumSectionHeader(
     icon: ImageVector? = null
 ) {
     val isGradientDark = LocalGradientDarkMode.current
+    val isEmberDark = LocalEmberDarkMode.current
+    val accentColors = currentAccentColors()
+    val accentBrushes = currentAccentBrushes()
     
     Row(
         modifier = modifier
@@ -239,18 +249,18 @@ fun PremiumSectionHeader(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (icon != null && isGradientDark) {
+        if (icon != null && (isGradientDark || isEmberDark)) {
             Box(
                 modifier = Modifier
                     .size(32.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(GradientBrushes.Primary),
+                    .background(accentBrushes.Primary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = GradientDarkColors.OnPrimary,
+                    tint = accentColors.OnPrimary,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -265,8 +275,8 @@ fun PremiumSectionHeader(
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
-            color = if (isGradientDark) {
-                GradientDarkColors.OnSurface
+            color = if (isGradientDark || isEmberDark) {
+                accentColors.OnSurface
             } else {
                 MaterialTheme.colorScheme.onSurface
             }
@@ -284,22 +294,25 @@ fun PremiumInfoCard(
     icon: ImageVector? = null
 ) {
     val isGradientDark = LocalGradientDarkMode.current
+    val isEmberDark = LocalEmberDarkMode.current
+    val accentColors = currentAccentColors()
+    val accentBrushes = currentAccentBrushes()
     
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .then(
-                if (isGradientDark) {
+                if (isGradientDark || isEmberDark) {
                     Modifier.border(
                         width = 1.5.dp,
-                        brush = GradientBrushes.Primary,
+                        brush = accentBrushes.Primary,
                         shape = RoundedCornerShape(16.dp)
                     )
                 } else Modifier
             ),
         shape = RoundedCornerShape(16.dp),
-        color = if (isGradientDark) {
-            GradientDarkColors.SurfaceVariant
+        color = if (isGradientDark || isEmberDark) {
+            accentColors.SurfaceVariant
         } else {
             MaterialTheme.colorScheme.surfaceVariant
         }
@@ -315,8 +328,8 @@ fun PremiumInfoCard(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = if (isGradientDark) {
-                        GradientDarkColors.GradientCyan
+                    tint = if (isGradientDark || isEmberDark) {
+                        accentColors.BrightAccent1
                     } else {
                         MaterialTheme.colorScheme.primary
                     },
@@ -326,8 +339,8 @@ fun PremiumInfoCard(
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
-                color = if (isGradientDark) {
-                    GradientDarkColors.OnSurface
+                color = if (isGradientDark || isEmberDark) {
+                    accentColors.OnSurface
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 }

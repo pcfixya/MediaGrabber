@@ -73,13 +73,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.junkfood.seal.R
 import com.junkfood.seal.ui.common.LocalDarkTheme
+import com.junkfood.seal.ui.common.LocalEmberDarkMode
 import com.junkfood.seal.ui.common.LocalGradientDarkMode
 import com.junkfood.seal.ui.common.ThemedIconColors
 import com.junkfood.seal.ui.component.BackButton
 import com.junkfood.seal.ui.component.ConfirmButton
 import com.junkfood.seal.ui.component.SealDialog
-import com.junkfood.seal.ui.theme.GradientBrushes
-import com.junkfood.seal.ui.theme.GradientDarkColors
+import com.junkfood.seal.ui.theme.currentAccentBrushes
+import com.junkfood.seal.ui.theme.currentAccentColors
 import com.junkfood.seal.util.makeToast
 
 private data class ToolItem(
@@ -147,11 +148,13 @@ fun MoreToolsPage(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
     val isGradientDark = LocalGradientDarkMode.current
-    val useGradientColors = isGradientDark && isDarkTheme
+    val isEmberDark = LocalEmberDarkMode.current
+    val useGradientColors = (isGradientDark || isEmberDark) && isDarkTheme
+    val accentColors = currentAccentColors()
     var infoDialogTool by remember { mutableStateOf<ToolItem?>(null) }
 
     val backgroundColor = if (useGradientColors) {
-        GradientDarkColors.Background
+        accentColors.Background
     } else {
         MaterialTheme.colorScheme.background
     }
@@ -168,7 +171,7 @@ fun MoreToolsPage(
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = backgroundColor,
                     scrolledContainerColor = if (useGradientColors) {
-                        GradientDarkColors.Background
+                        accentColors.Background
                     } else {
                         MaterialTheme.colorScheme.surface
                     },
@@ -243,6 +246,8 @@ fun MoreToolsPage(
  */
 @Composable
 private fun HeroBanner(useGradientColors: Boolean) {
+    val accentColors = currentAccentColors()
+    val accentBrushes = currentAccentBrushes()
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
 
@@ -265,7 +270,7 @@ private fun HeroBanner(useGradientColors: Boolean) {
                 .fillMaxWidth()
                 .background(
                     if (useGradientColors) {
-                        GradientBrushes.Primary
+                        accentBrushes.Primary
                     } else {
                         Brush.linearGradient(
                             colors = listOf(
@@ -292,7 +297,7 @@ private fun HeroBanner(useGradientColors: Boolean) {
                         imageVector = Icons.Outlined.AutoAwesome,
                         contentDescription = null,
                         tint = if (useGradientColors) {
-                            GradientDarkColors.OnPrimary
+                            accentColors.OnPrimary
                         } else {
                             MaterialTheme.colorScheme.onPrimaryContainer
                         },
@@ -305,7 +310,7 @@ private fun HeroBanner(useGradientColors: Boolean) {
                         text = stringResource(R.string.more_tools),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = if (useGradientColors) {
-                            GradientDarkColors.OnPrimary
+                            accentColors.OnPrimary
                         } else {
                             MaterialTheme.colorScheme.onPrimaryContainer
                         },
@@ -319,7 +324,7 @@ private fun HeroBanner(useGradientColors: Boolean) {
                         text = stringResource(R.string.more_tools_desc),
                         style = MaterialTheme.typography.bodySmall,
                         color = if (useGradientColors) {
-                            GradientDarkColors.OnPrimary.copy(alpha = 0.85f)
+                            accentColors.OnPrimary.copy(alpha = 0.85f)
                         } else {
                             MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                         },
@@ -354,6 +359,7 @@ private fun ToolCard(
     onLongClick: () -> Unit = {},
     onInfoClick: () -> Unit = {},
 ) {
+    val accentColors = currentAccentColors()
     var visible by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -391,18 +397,18 @@ private fun ToolCard(
     LaunchedEffect(Unit) { visible = true }
 
     val borderColor = if (useGradientColors) {
-        GradientDarkColors.GlassWhiteBorder
+        accentColors.GlassWhiteBorder
     } else {
         MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
     }
     val surfaceColor = if (useGradientColors) {
-        GradientDarkColors.GlassSurface.copy(alpha = 0.06f)
+        accentColors.GlassSurface.copy(alpha = 0.06f)
     } else {
         MaterialTheme.colorScheme.surfaceContainer
     }
-    val titleColor = if (useGradientColors) GradientDarkColors.OnSurface else MaterialTheme.colorScheme.onSurface
+    val titleColor = if (useGradientColors) accentColors.OnSurface else MaterialTheme.colorScheme.onSurface
     val subtleColor = if (useGradientColors) {
-        GradientDarkColors.OnSurface.copy(alpha = 0.6f)
+        accentColors.OnSurface.copy(alpha = 0.6f)
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
     }
@@ -503,7 +509,7 @@ private fun ToolCard(
                         .clip(RoundedCornerShape(8.dp))
                         .background(
                             if (useGradientColors) {
-                                GradientDarkColors.GradientPrimaryStart.copy(alpha = 0.2f)
+                                accentColors.GradientPrimaryStart.copy(alpha = 0.2f)
                             } else {
                                 MaterialTheme.colorScheme.secondaryContainer
                             }
@@ -517,7 +523,7 @@ private fun ToolCard(
                             fontWeight = FontWeight.Medium,
                         ),
                         color = if (useGradientColors) {
-                            GradientDarkColors.GradientPrimaryEnd
+                            accentColors.GradientPrimaryEnd
                         } else {
                             MaterialTheme.colorScheme.onSecondaryContainer
                         },

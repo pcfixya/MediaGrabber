@@ -89,6 +89,13 @@ const val RATE_LIMIT = "rate_limit"
 const val MAX_RATE = "max_rate"
 private const val HIGH_CONTRAST = "high_contrast"
 private const val GRADIENT_DARK_MODE = "gradient_dark_mode"
+private const val ACCENT_THEME = "accent_theme"
+
+object AccentTheme {
+    const val OFF = 0
+    const val GRADIENT_DARK = 1
+    const val EMBER_DARK = 2
+}
 const val DISABLE_PREVIEW = "disable_preview"
 const val PRIVATE_DIRECTORY = "private_directory"
 const val CROP_ARTWORK = "crop_artwork"
@@ -484,8 +491,13 @@ object PreferenceUtil {
         val isDynamicColorEnabled: Boolean = false,
         val seedColor: Int = DEFAULT_SEED_COLOR,
         val paletteStyleIndex: Int = 0,
-        val isGradientDarkModeEnabled: Boolean = false,
-    )
+        val accentTheme: Int = AccentTheme.OFF,
+    ) {
+        val isGradientDarkModeEnabled: Boolean
+            get() = accentTheme == AccentTheme.GRADIENT_DARK
+        val isEmberDarkModeEnabled: Boolean
+            get() = accentTheme == AccentTheme.EMBER_DARK
+    }
 
     fun getMaxDownloadRate(): String = MAX_RATE.getString()
 
@@ -501,7 +513,12 @@ object PreferenceUtil {
                     kv.decodeBool(DYNAMIC_COLOR, DynamicColors.isDynamicColorAvailable()),
                 seedColor = kv.decodeInt(THEME_COLOR, DEFAULT_SEED_COLOR),
                 paletteStyleIndex = kv.decodeInt(PALETTE_STYLE, 0),
-                isGradientDarkModeEnabled = kv.decodeBool(GRADIENT_DARK_MODE, true),
+                accentTheme =
+                    kv.decodeInt(
+                        ACCENT_THEME,
+                        if (kv.decodeBool(GRADIENT_DARK_MODE, true)) AccentTheme.GRADIENT_DARK
+                        else AccentTheme.OFF,
+                    ),
             )
         )
     val AppSettingsStateFlow = mutableAppSettingsStateFlow.asStateFlow()
@@ -545,12 +562,10 @@ object PreferenceUtil {
         }
     }
 
-    fun switchGradientDarkMode(
-        enabled: Boolean = !mutableAppSettingsStateFlow.value.isGradientDarkModeEnabled
-    ) {
+    fun setAccentTheme(theme: Int) {
         applicationScope.launch(Dispatchers.IO) {
-            mutableAppSettingsStateFlow.update { it.copy(isGradientDarkModeEnabled = enabled) }
-            kv.encode(GRADIENT_DARK_MODE, enabled)
+            mutableAppSettingsStateFlow.update { it.copy(accentTheme = theme) }
+            kv.encode(ACCENT_THEME, theme)
         }
     }
 

@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.junkfood.seal.R
 import com.junkfood.seal.ui.common.LocalGradientDarkMode
-import com.junkfood.seal.ui.theme.GradientDarkColors
+import com.junkfood.seal.ui.common.LocalEmberDarkMode
+import com.junkfood.seal.ui.theme.currentAccentColors
 import com.junkfood.seal.ui.theme.SealTheme
 import kotlinx.coroutines.delay
 
@@ -47,6 +48,8 @@ fun SplashScreen(
     onSplashFinished: () -> Unit
 ) {
     val isGradientDark = LocalGradientDarkMode.current
+    val isEmberDark = LocalEmberDarkMode.current
+    val accentColors = currentAccentColors()
     
     // Animation states
     var logoVisible by remember { mutableStateOf(false) }
@@ -111,12 +114,12 @@ fun SplashScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                if (isGradientDark) {
+                if ((isGradientDark || isEmberDark)) {
                     Brush.verticalGradient(
                         colors = listOf(
-                            GradientDarkColors.Background,
-                            GradientDarkColors.Surface,
-                            GradientDarkColors.SurfaceContainerLow
+                            accentColors.Background,
+                            accentColors.Surface,
+                            accentColors.SurfaceContainerLow
                         )
                     )
                 } else {
@@ -141,7 +144,7 @@ fun SplashScreen(
                 modifier = Modifier.size(180.dp)
             ) {
                 // Glow effect (only in Gradient Dark mode)
-                if (isGradientDark && logoVisible) {
+                if ((isGradientDark || isEmberDark) && logoVisible) {
                     Box(
                         modifier = Modifier
                             .size(200.dp)
@@ -150,7 +153,7 @@ fun SplashScreen(
                             .background(
                                 brush = Brush.radialGradient(
                                     colors = listOf(
-                                        GradientDarkColors.GradientPrimaryEnd.copy(alpha = 0.5f),
+                                        accentColors.GradientPrimaryEnd.copy(alpha = 0.5f),
                                         Color.Transparent
                                     )
                                 )
@@ -178,7 +181,7 @@ fun SplashScreen(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 ),
-                color = if (isGradientDark) {
+                color = if ((isGradientDark || isEmberDark)) {
                     Color.White
                 } else {
                     MaterialTheme.colorScheme.onBackground
@@ -195,8 +198,8 @@ fun SplashScreen(
                     fontWeight = FontWeight.Medium,
                     letterSpacing = 0.5.sp
                 ),
-                color = if (isGradientDark) {
-                    GradientDarkColors.GradientPrimaryEnd
+                color = if ((isGradientDark || isEmberDark)) {
+                    accentColors.GradientPrimaryEnd
                 } else {
                     MaterialTheme.colorScheme.primary
                 },
@@ -217,8 +220,8 @@ fun SplashScreen(
             Text(
                 text = "© 2026 MediaGrabber",
                 style = MaterialTheme.typography.labelSmall,
-                color = if (isGradientDark) {
-                    GradientDarkColors.OnSurface.copy(alpha = 0.4f)
+                color = if ((isGradientDark || isEmberDark)) {
+                    accentColors.OnSurface.copy(alpha = 0.4f)
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                 }

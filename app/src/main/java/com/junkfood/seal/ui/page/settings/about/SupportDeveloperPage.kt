@@ -26,8 +26,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.junkfood.seal.R
 import com.junkfood.seal.ui.common.LocalDarkTheme
+import com.junkfood.seal.ui.common.LocalEmberDarkMode
 import com.junkfood.seal.ui.common.LocalGradientDarkMode
-import com.junkfood.seal.ui.theme.GradientBrushes
+import com.junkfood.seal.ui.theme.currentAccentBrushes
 
 private const val TAG = "SupportDeveloperPage"
 
@@ -39,6 +40,8 @@ fun SupportDeveloperPage(
     val uriHandler = LocalUriHandler.current
     val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
     val isGradientDark = LocalGradientDarkMode.current
+    val isEmberDark = LocalEmberDarkMode.current
+    val accentBrushes = currentAccentBrushes()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -85,8 +88,8 @@ fun SupportDeveloperPage(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(20.dp))
                         .background(
-                            if (isDarkTheme && isGradientDark) {
-                                GradientBrushes.Primary
+                            if (isDarkTheme && (isGradientDark || isEmberDark)) {
+                                accentBrushes.Primary
                             } else {
                                 Brush.linearGradient(
                                     colors = listOf(
@@ -107,7 +110,7 @@ fun SupportDeveloperPage(
                             imageVector = Icons.Outlined.Favorite,
                             contentDescription = null,
                             modifier = Modifier.size(56.dp),
-                            tint = if (isDarkTheme && isGradientDark) 
+                            tint = if (isDarkTheme && (isGradientDark || isEmberDark)) 
                                 Color.White 
                             else 
                                 MaterialTheme.colorScheme.onPrimaryContainer
@@ -117,7 +120,7 @@ fun SupportDeveloperPage(
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
-                            color = if (isDarkTheme && isGradientDark) 
+                            color = if (isDarkTheme && (isGradientDark || isEmberDark)) 
                                 Color.White 
                             else 
                                 MaterialTheme.colorScheme.onPrimaryContainer
@@ -126,7 +129,7 @@ fun SupportDeveloperPage(
                             text = "Your support helps keep MediaGrabber free and actively maintained",
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center,
-                            color = if (isDarkTheme && isGradientDark) 
+                            color = if (isDarkTheme && (isGradientDark || isEmberDark)) 
                                 Color.White.copy(alpha = 0.9f) 
                             else 
                                 MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
@@ -247,8 +250,8 @@ fun SupportDeveloperPage(
                     iconTint = Color(0xFFFFDD00),
                     title = "Buy Me a Coffee",
                     description = "buymeacoffee.com/neuralpulse",
-                    gradient = if (isDarkTheme && isGradientDark) {
-                        GradientBrushes.Primary
+                    gradient = if (isDarkTheme && (isGradientDark || isEmberDark)) {
+                        accentBrushes.Primary
                     } else {
                         Brush.linearGradient(
                             colors = listOf(

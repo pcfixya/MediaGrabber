@@ -15,7 +15,7 @@
 [![Android API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
 [![License](https://img.shields.io/github/license/JunkFood02/Seal?style=flat&color=blue)](https://github.com/JunkFood02/Seal/blob/main/LICENSE)
 
-**Seal Plus** is a powerful, premium video and audio downloader for Android. Built on the solid foundation of [Seal](https://github.com/JunkFood02/Seal) by [JunkFood02](https://github.com/JunkFood02), this enhanced version features exclusive premium UI themes, advanced functionality, and cutting-edge Material Design 3 implementation.
+**MediaGrabber** is a powerful, premium video and audio downloader for Android. Built on the solid foundation of [Seal](https://github.com/JunkFood02/Seal) by [JunkFood02](https://github.com/JunkFood02), this enhanced version features exclusive premium UI themes, advanced functionality, and cutting-edge Material Design 3 implementation.
 
 ### 🌟 What Makes MediaGrabber Special?
 
@@ -819,7 +819,7 @@ Seal Plus stands on the shoulders of giants. We're grateful to these amazing ope
 
 ### 🌍 Community Contributors
 
-- **Translators** on [Weblate](https://hosted.weblate.org/projects/seal/) - Making Seal Plus accessible worldwide
+- **Translators** on [Weblate](https://hosted.weblate.org/projects/seal/) - Making MediaGrabber accessible worldwide
 - **Beta Testers** - Helping us catch bugs early
 - **Issue Reporters** - Providing valuable feedback
 - **Feature Suggesters** - Shaping the roadmap

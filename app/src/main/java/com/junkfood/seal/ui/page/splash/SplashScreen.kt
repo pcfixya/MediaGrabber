@@ -34,7 +34,7 @@ import kotlinx.coroutines.delay
  * - Pulsing glow effect in Gradient Dark mode
  * - Theme-aware colors and gradients
  * - Professional branding with "PLUS" badge
- * - Bottom copyright and powered by text
+ * - Bottom copyright text
  * 
  * Timing:
  * - Logo appears at 200ms with bounce effect
@@ -214,18 +214,6 @@ fun SplashScreen(
                 .padding(bottom = 48.dp)
                 .alpha(taglineAlpha)
         ) {
-            Text(
-                text = "Powered by Mahesh Technicals",
-                style = MaterialTheme.typography.bodySmall,
-                color = if (isGradientDark) {
-                    GradientDarkColors.OnSurface.copy(alpha = 0.6f)
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                }
-            )
-            
-            Spacer(modifier = Modifier.height(4.dp))
-            
             Text(
                 text = "© 2026 MediaGrabber",
                 style = MaterialTheme.typography.labelSmall,

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Update
 import androidx.compose.material.icons.outlined.UpdateDisabled
+import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material.icons.outlined.VolunteerActivism
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -74,8 +75,8 @@ private const val repoUrl = "https://github.com/pcfixya/MediaGrabber/blob/main/R
 const val weblate = "https://hosted.weblate.org/engage/seal/"
 const val YtdlpRepository = "https://github.com/yt-dlp/yt-dlp"
 private const val githubIssueUrl = "https://github.com/pcfixya/MediaGrabber/issues"
-private const val telegramChannelUrl = "https://t.me/maheshtechnicals"
-private const val youtubeChannelUrl = "https://youtube.com/@maheshtechnicals"
+private const val telegramChannelUrl = "https://t.me/Jurek_R1a"
+private const val tiktokUrl = "https://www.tiktok.com/@jurek_r1a"
 private const val githubSponsor = "https://github.com/sponsors/JunkFood02"
 private const val TAG = "AboutPage"
 
@@ -239,17 +240,17 @@ fun AboutPage(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
                             CommunityCard(
-                                title = stringResource(R.string.youtube_channel),
-                                description = youtubeChannelUrl,
-                                icon = painterResource(id = R.drawable.icons8_youtube),
-                                onClick = { openUrl(youtubeChannelUrl) },
+                                title = "TikTok",
+                                description = tiktokUrl,
+                                icon = Icons.Outlined.Videocam,
+                                onClick = { openUrl(tiktokUrl) },
                                 modifier = Modifier.weight(1f),
                             )
                             CommunityCard(
                                 title = stringResource(R.string.website),
-                                description = "sealplus.in",
+                                description = "github.com/pcfixya/MediaGrabber",
                                 icon = Icons.Outlined.Public,
-                                onClick = { openUrl("https://sealplus.in/") },
+                                onClick = { openUrl(repoUrl) },
                                 modifier = Modifier.weight(1f),
                             )
                         }

@@ -248,9 +248,9 @@ fun AboutPage(
                             )
                             CommunityCard(
                                 title = stringResource(R.string.website),
-                                description = "github.com/pcfixya/MediaGrabber",
+                                description = "NeuralPulse.uk",
                                 icon = Icons.Outlined.Public,
-                                onClick = { openUrl(repoUrl) },
+                                onClick = { openUrl("https://NeuralPulse.uk") },
                                 modifier = Modifier.weight(1f),
                             )
                         }

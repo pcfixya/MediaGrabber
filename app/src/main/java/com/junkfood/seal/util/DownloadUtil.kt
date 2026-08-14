@@ -639,10 +639,6 @@ object DownloadUtil {
      */
     @CheckResult
     fun getCookieListFromDatabase(): Result<List<Cookie>> = runCatching {
-        val manager = CookieManager.getInstance()
-        // Flush in-memory cookies to the WebView's persistent store before reading.
-        manager.flush()
-
         // Fetch all saved profile URLs from Room first — we need to know whether any
         // profile uses manual cookies before deciding if hasCookies() matters.
         val profiles = runBlocking(Dispatchers.IO) {
@@ -656,103 +652,117 @@ object DownloadUtil {
             )
         }
 
-        // Only require WebView cookies when NO profile has manually-pasted content.
-        // If at least one profile has manual content, skip this check — those cookies
-        // are read from the profile's content field, not from CookieManager.
-        if (profiles.none { it.content.isNotEmpty() } && !manager.hasCookies()) {
-            throw Exception(
-                "No cookies found in the browser. " +
-                "Please open Settings → Network → Cookies, tap a profile, " +
-                "then tap 'Generate cookies' and log in to the website."
-            )
-        }
+        // android.webkit.CookieManager is backed by the WebView provider, which must be
+        // accessed from the main thread. This whole function runs on a background
+        // dispatcher (called from downloadVideo(), which executes entirely on
+        // Dispatchers.Default) — touching CookieManager off the main thread here was
+        // observed to wedge the main Looper on some devices/WebView versions, freezing
+        // all UI input (nav drawer, home screen — everything) until the app was
+        // force-restarted. Do every CookieManager call in one hop to Dispatchers.Main.
+        val cookies = runBlocking(Dispatchers.Main) {
+            val manager = CookieManager.getInstance()
+            // Flush in-memory cookies to the WebView's persistent store before reading.
+            manager.flush()
 
-        val seen = HashSet<String>() // deduplication key: "domain|name"
-        val cookies = mutableListOf<Cookie>()
+            // Only require WebView cookies when NO profile has manually-pasted content.
+            // If at least one profile has manual content, skip this check — those cookies
+            // are read from the profile's content field, not from CookieManager.
+            if (profiles.none { it.content.isNotEmpty() } && !manager.hasCookies()) {
+                throw Exception(
+                    "No cookies found in the browser. " +
+                    "Please open Settings → Network → Cookies, tap a profile, " +
+                    "then tap 'Generate cookies' and log in to the website."
+                )
+            }
 
-        for (profile in profiles) {
+            val seen = HashSet<String>() // deduplication key: "domain|name"
+            val collected = mutableListOf<Cookie>()
 
-            // ------------------------------------------------------------------
-            // Manual cookie path: the user pasted cookies directly into the
-            // profile. Parse them and skip the CookieManager lookup entirely.
-            // ------------------------------------------------------------------
-            if (profile.content.isNotEmpty()) {
-                val manual = parseCookieContent(profile.url, profile.content)
-                if (manual.isNotEmpty()) {
-                    manual.forEach { c ->
-                        val key = "${c.domain}|${c.name}"
-                        if (seen.add(key)) cookies.add(c)
+            for (profile in profiles) {
+
+                // ------------------------------------------------------------------
+                // Manual cookie path: the user pasted cookies directly into the
+                // profile. Parse them and skip the CookieManager lookup entirely.
+                // ------------------------------------------------------------------
+                if (profile.content.isNotEmpty()) {
+                    val manual = parseCookieContent(profile.url, profile.content)
+                    if (manual.isNotEmpty()) {
+                        manual.forEach { c ->
+                            val key = "${c.domain}|${c.name}"
+                            if (seen.add(key)) collected.add(c)
+                        }
+                        Log.d(TAG, "Profile '${profile.url}': using ${manual.size} manual cookie(s)")
+                        continue // skip CookieManager for this profile
                     }
-                    Log.d(TAG, "Profile '${profile.url}': using ${manual.size} manual cookie(s)")
-                    continue // skip CookieManager for this profile
+                    Log.w(TAG, "Profile '${profile.url}': content is set but parsing returned 0 cookies")
                 }
-                Log.w(TAG, "Profile '${profile.url}': content is set but parsing returned 0 cookies")
-            }
 
-            // ------------------------------------------------------------------
-            // Automatic path: read cookies from the in-app WebView's CookieManager.
-            // ------------------------------------------------------------------
-            // Normalise to HTTPS. CookieManager.getCookie() with an http:// URL silently
-            // omits all Secure-flagged cookies. Facebook session cookies (c_user, xs),
-            // Instagram session cookies (sessionid, csrftoken), and virtually every other
-            // social-media auth cookie carry the Secure flag, so an http:// query returns
-            // an empty or incomplete cookie string — causing silent auth failures.
-            val rawUrl = when {
-                profile.url.startsWith("https://") -> profile.url
-                profile.url.startsWith("http://")  -> profile.url.replaceFirst("http://", "https://")
-                else                               -> "https://${profile.url}"
-            }
-            val host = Uri.parse(rawUrl).host ?: continue
-
-            // Query both the plain and www-prefixed variants because some sites set their
-            // session cookies on "facebook.com" while others use "www.facebook.com".
-            val urlVariants = buildList {
-                add(rawUrl)
-                if (host.startsWith("www.")) {
-                    add(rawUrl.replaceFirst("://www.", "://"))
-                } else {
-                    add(rawUrl.replaceFirst("://", "://www."))
+                // ------------------------------------------------------------------
+                // Automatic path: read cookies from the in-app WebView's CookieManager.
+                // ------------------------------------------------------------------
+                // Normalise to HTTPS. CookieManager.getCookie() with an http:// URL silently
+                // omits all Secure-flagged cookies. Facebook session cookies (c_user, xs),
+                // Instagram session cookies (sessionid, csrftoken), and virtually every other
+                // social-media auth cookie carry the Secure flag, so an http:// query returns
+                // an empty or incomplete cookie string — causing silent auth failures.
+                val rawUrl = when {
+                    profile.url.startsWith("https://") -> profile.url
+                    profile.url.startsWith("http://")  -> profile.url.replaceFirst("http://", "https://")
+                    else                               -> "https://${profile.url}"
                 }
-            }
+                val host = Uri.parse(rawUrl).host ?: continue
 
-            // Use the registered (base) domain rather than the exact queried hostname.
-            // Example: querying "https://www.facebook.com" gives host "www.facebook.com".
-            // Facebook sets cookies on ".facebook.com", so writing ".www.facebook.com" in
-            // the Netscape file means yt-dlp would NOT send those cookies to subdomains like
-            // graph.facebook.com, video.facebook.com, etc., breaking authenticated downloads.
-            // Stripping the leading "www." gives ".facebook.com" which covers all subdomains.
-            val baseDomain = "." + if (host.startsWith("www.")) host.removePrefix("www.") else host
+                // Query both the plain and www-prefixed variants because some sites set their
+                // session cookies on "facebook.com" while others use "www.facebook.com".
+                val urlVariants = buildList {
+                    add(rawUrl)
+                    if (host.startsWith("www.")) {
+                        add(rawUrl.replaceFirst("://www.", "://"))
+                    } else {
+                        add(rawUrl.replaceFirst("://", "://www."))
+                    }
+                }
 
-            for (url in urlVariants) {
-                // getCookie returns "name1=val1; name2=val2; ..." or null if nothing is set.
-                val raw = manager.getCookie(url) ?: continue
-                raw.split(";").forEach rawCookie@{ pair ->
-                    val eqIdx = pair.indexOf('=')
-                    if (eqIdx < 0) return@rawCookie
-                    val name  = pair.substring(0, eqIdx).trim()
-                    // Do NOT trim value — some cookies intentionally have leading/trailing
-                    // spaces in their value, and we must preserve those exactly.
-                    val value = pair.substring(eqIdx + 1)
-                    if (name.isEmpty()) return@rawCookie
-                    val dedupKey = "$baseDomain|$name"
-                    if (seen.add(dedupKey)) {
-                        cookies.add(
-                            Cookie(
-                                domain = baseDomain,
-                                name   = name,
-                                value  = value,
-                                includeSubdomains = true,
-                                path   = "/",
-                                // CookieManager does not expose Secure, HttpOnly, or expiry —
-                                // yt-dlp does not require these for authentication.
-                                secure    = false,
-                                expiry    = 0L,
-                                isHttpOnly = false,
+                // Use the registered (base) domain rather than the exact queried hostname.
+                // Example: querying "https://www.facebook.com" gives host "www.facebook.com".
+                // Facebook sets cookies on ".facebook.com", so writing ".www.facebook.com" in
+                // the Netscape file means yt-dlp would NOT send those cookies to subdomains like
+                // graph.facebook.com, video.facebook.com, etc., breaking authenticated downloads.
+                // Stripping the leading "www." gives ".facebook.com" which covers all subdomains.
+                val baseDomain = "." + if (host.startsWith("www.")) host.removePrefix("www.") else host
+
+                for (url in urlVariants) {
+                    // getCookie returns "name1=val1; name2=val2; ..." or null if nothing is set.
+                    val raw = manager.getCookie(url) ?: continue
+                    raw.split(";").forEach rawCookie@{ pair ->
+                        val eqIdx = pair.indexOf('=')
+                        if (eqIdx < 0) return@rawCookie
+                        val name  = pair.substring(0, eqIdx).trim()
+                        // Do NOT trim value — some cookies intentionally have leading/trailing
+                        // spaces in their value, and we must preserve those exactly.
+                        val value = pair.substring(eqIdx + 1)
+                        if (name.isEmpty()) return@rawCookie
+                        val dedupKey = "$baseDomain|$name"
+                        if (seen.add(dedupKey)) {
+                            collected.add(
+                                Cookie(
+                                    domain = baseDomain,
+                                    name   = name,
+                                    value  = value,
+                                    includeSubdomains = true,
+                                    path   = "/",
+                                    // CookieManager does not expose Secure, HttpOnly, or expiry —
+                                    // yt-dlp does not require these for authentication.
+                                    secure    = false,
+                                    expiry    = 0L,
+                                    isHttpOnly = false,
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
+            collected
         }
 
         if (cookies.isEmpty()) {

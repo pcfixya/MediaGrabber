@@ -45,7 +45,7 @@ android {
         applicationId = "com.jurek.mediagrabber"
         minSdk = 24
         targetSdk = 37
-        versionCode = 300_020_400
+        versionCode = 300_030_400
         check(versionCode == currentVersionCode)
 
         versionName = baseVersionName

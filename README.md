@@ -17,7 +17,7 @@
 
 **Seal Plus** is a powerful, premium video and audio downloader for Android. Built on the solid foundation of [Seal](https://github.com/JunkFood02/Seal) by [JunkFood02](https://github.com/JunkFood02), this enhanced version features exclusive premium UI themes, advanced functionality, and cutting-edge Material Design 3 implementation.
 
-### 🌟 What Makes Seal Plus Special?
+### 🌟 What Makes MediaGrabber Special?
 
 - **🎨 Exclusive Gradient Dark Theme**: Premium glassmorphism UI with vibrant gradients
 - **⚡ Auto-Update System**: Seamless in-app updates from our release page

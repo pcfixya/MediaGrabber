@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="180" viewBox="0 0 820 180">
+  <g transform="scale(0.3515625)">
+  <path d="M168 128 H104 V416 H168" fill="none" stroke="#5d5294" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"></path>
+  <path d="M344 128 H408 V416 H344" fill="none" stroke="#5d5294" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"></path>
+  <rect x="236" y="96" width="40" height="168" rx="20" fill="#9184d9"></rect>
+  <path d="M180 252 H332 L256 376 Z" fill="#9184d9"></path></g>
+  <text x="228" y="112" font-family="Inter, system-ui, sans-serif" font-size="62" font-weight="300" letter-spacing="-1.2" fill="#e9e9ed">Media<tspan font-weight="600" fill="#9184d9">Grabber</tspan></text>
+</svg>

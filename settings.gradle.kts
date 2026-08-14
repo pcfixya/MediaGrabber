@@ -38,6 +38,6 @@ develocity {
     }
 }
 
-rootProject.name = "Seal Plus"
+rootProject.name = "MediaGrabber"
 include (":app")
 include(":color")

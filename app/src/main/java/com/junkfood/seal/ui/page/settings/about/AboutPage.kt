@@ -69,11 +69,11 @@ import com.junkfood.seal.ui.component.ConfirmButton
 import com.junkfood.seal.util.AUTO_UPDATE
 import com.junkfood.seal.util.PreferenceUtil
 
-private const val releaseURL = "https://github.com/MaheshTechnicals/Sealplus/releases"
-private const val repoUrl = "https://github.com/MaheshTechnicals/Sealplus/blob/main/README.md"
+private const val releaseURL = "https://github.com/pcfixya/MediaGrabber/releases"
+private const val repoUrl = "https://github.com/pcfixya/MediaGrabber/blob/main/README.md"
 const val weblate = "https://hosted.weblate.org/engage/seal/"
 const val YtdlpRepository = "https://github.com/yt-dlp/yt-dlp"
-private const val githubIssueUrl = "https://github.com/MaheshTechnicals/Sealplus/issues"
+private const val githubIssueUrl = "https://github.com/pcfixya/MediaGrabber/issues"
 private const val telegramChannelUrl = "https://t.me/maheshtechnicals"
 private const val youtubeChannelUrl = "https://youtube.com/@maheshtechnicals"
 private const val githubSponsor = "https://github.com/sponsors/JunkFood02"
@@ -270,6 +270,44 @@ fun AboutPage(
                 }
 
                 item {
+                    Card(
+                        onClick = { openUrl("https://github.com/pcfixya") },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        ),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "MediaGrabber fork by Jurek (pcfixya)",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "github.com/pcfixya",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color =
+                                        MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.8f
+                                        ),
+                                )
+                            }
+                            Icon(
+                                imageVector = Icons.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+
+                item {
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
                         text = "Version ${packageInfo.versionName ?: ""}  \u2022  ${context.packageName}",
@@ -353,7 +391,7 @@ fun AutoUpdateUnavailableDialog(onDismissRequest: () -> Unit = {}) {
         val startIndex = text.indexOf(hyperLinkText)
         val endIndex = startIndex + hyperLinkText.length
         addUrlAnnotation(
-            UrlAnnotation("https://github.com/MaheshTechnicals/Sealplus/releases/latest"),
+            UrlAnnotation("https://github.com/pcfixya/MediaGrabber/releases/latest"),
             start = startIndex,
             end = endIndex,
         )

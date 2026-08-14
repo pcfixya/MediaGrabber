@@ -1,0 +1,10 @@
+<b>Funkcje</b>
+Pobieraj filmy i pliki audio z platform obsługiwanych przez yt-dlp
+Osadzaj metadane i miniatury wideo w wyodrębnionych plikach audio
+Pobierz wszystkie filmy z playlisty jednym kliknięciem
+Użyj wbudowanego aria2c jako zewnętrznego narzędzia do pobierania
+Osadzaj napisy w pobieranych filmach
+Wykonuj niestandardowe polecenia yt-dlp za pomocą szablonów
+Zarządzaj pobieraniami i niestandardowymi szablonami poleceń w aplikacji
+Prosty i przyjazny w obsłudze
+Interfejs w stylu Material Design 3 z dynamicznym motywem kolorystycznym

@@ -253,7 +253,7 @@ fun PremiumHomeScreenExample() {
     Scaffold(
         topBar = {
             LargeTopAppBar(
-                title = { Text("Seal Plus") },
+                title = { Text("MediaGrabber") },
                 scrollBehavior = scrollBehavior
             )
         }
@@ -372,7 +372,7 @@ fun PremiumAboutPageExample() {
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             Text(
-                                text = "Seal Plus",
+                                text = "MediaGrabber",
                                 style = MaterialTheme.typography.headlineMedium
                             )
                             Text(

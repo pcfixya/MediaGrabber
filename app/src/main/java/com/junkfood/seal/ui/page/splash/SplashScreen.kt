@@ -26,7 +26,7 @@ import com.junkfood.seal.ui.theme.SealTheme
 import kotlinx.coroutines.delay
 
 /**
- * Modern Professional Splash Screen for Seal Plus
+ * Modern Professional Splash Screen for MediaGrabber
  * 
  * Features:
  * - Smooth spring animations for logo entrance
@@ -161,7 +161,7 @@ fun SplashScreen(
                 // Main Logo
                 Image(
                     painter = painterResource(id = R.drawable.splash_logo),
-                    contentDescription = "Seal Plus Logo",
+                    contentDescription = "MediaGrabber Logo",
                     modifier = Modifier
                         .size(160.dp)
                         .scale(logoScale)
@@ -227,7 +227,7 @@ fun SplashScreen(
             Spacer(modifier = Modifier.height(4.dp))
             
             Text(
-                text = "© 2026 Seal Plus",
+                text = "© 2026 MediaGrabber",
                 style = MaterialTheme.typography.labelSmall,
                 color = if (isGradientDark) {
                     GradientDarkColors.OnSurface.copy(alpha = 0.4f)

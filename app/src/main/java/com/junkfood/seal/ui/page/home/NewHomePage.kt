@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -116,6 +117,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -748,7 +750,7 @@ fun NewHomePage(
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Seal+ Branding with animated glowing "+"
+            // MediaGrabber branding
             item {
                 Box(
                     modifier = Modifier
@@ -756,15 +758,11 @@ fun NewHomePage(
                         .padding(vertical = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "Seal",
-                            style = MaterialTheme.typography.displayMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        AnimatedGlowingPlus()
-                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.home_logo_lockup),
+                        contentDescription = "MediaGrabber",
+                        modifier = Modifier.height(48.dp)
+                    )
                 }
             }
 
@@ -2609,71 +2607,8 @@ private fun downloadStateSortPriority(state: Task.DownloadState): Int = when (st
 }
 
 /**
- * Animated glowing "+" text with continuously cycling gradient colors
- * and a pulsing glow effect that matches the app theme.
- */
-@Composable
-fun AnimatedGlowingPlus() {
-    val infiniteTransition = rememberInfiniteTransition(label = "plusGlow")
-
-    // Animate the gradient offset to make colors flow continuously
-    val gradientShift by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1500f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2500, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "gradientShift"
-    )
-
-    // Animate glow intensity (pulsing alpha for the shadow)
-    val glowAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.4f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1200, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "glowAlpha"
-    )
-
-    val gradientColors = listOf(
-        MaterialTheme.colorScheme.primary,
-        MaterialTheme.colorScheme.tertiary,
-        MaterialTheme.colorScheme.secondary,
-        MaterialTheme.colorScheme.tertiary,
-        MaterialTheme.colorScheme.primary,
-    )
-
-    val glowColor = MaterialTheme.colorScheme.primary.copy(alpha = glowAlpha * 0.6f)
-
-    val gradientBrush = Brush.linearGradient(
-        colors = gradientColors,
-        start = Offset(gradientShift, 0f),
-        end = Offset(gradientShift + 500f, 500f),
-        tileMode = TileMode.Mirror
-    )
-
-    Text(
-        text = "+",
-        style = MaterialTheme.typography.displayMedium.merge(
-            TextStyle(
-                brush = gradientBrush,
-                shadow = Shadow(
-                    color = glowColor,
-                    offset = Offset.Zero,
-                    blurRadius = 16f * glowAlpha
-                )
-            )
-        ),
-        fontWeight = FontWeight.Bold
-    )
-}
-
-/**
  * Quick-access row for the 4 More Tools (Batch URL Import, Thumbnail Download, Video Info
- * Download, Comment Download), placed between the "Seal+" branding and the URL input field.
+ * Download, Comment Download), placed between the MediaGrabber branding and the URL input field.
  *
  * Icon-only by design — no labels/section header — so it reads as a native strip of shortcuts
  * baked into the home screen rather than a bolted-on section. Colors reuse the same

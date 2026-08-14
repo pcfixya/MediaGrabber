@@ -38,8 +38,12 @@ private const val APACHE_V2 = "Apache License, Version 2.0"
 private const val UNLICENSE = "The Unlicense"
 private const val BSD = "BSD 3-Clause License"
 
+private const val mediaGrabberForkUrl = "https://github.com/pcfixya"
+private const val sealUrl = "https://github.com/JunkFood02/Seal"
+private const val sealPlusUrl = "https://github.com/MaheshTechnicals/Sealplus"
 private const val youtubedlAndroidUrl = "https://github.com/yausername/youtubedl-android"
 private const val ytdlpUrl = "https://github.com/yt-dlp/yt-dlp"
+private const val mutagenUrl = "https://github.com/quodlibet/mutagen"
 private const val readYou = "https://github.com/Ashinch/ReadYou"
 private const val dvd = "https://github.com/yausername/dvd"
 private const val icons8 = "https://icons8.com/"
@@ -70,9 +74,13 @@ fun CreditsPage(onNavigateBack: () -> Unit) {
 
     val creditsList =
         listOf(
+            Credit("MediaGrabber fork by Jurek (pcfixya)", null, mediaGrabberForkUrl),
+            Credit("Seal by JunkFood02", GPL_V3, sealUrl),
+            Credit("Seal Plus by Mahesh Technicals", GPL_V3, sealPlusUrl),
             Credit("yt-dlp", UNLICENSE, ytdlpUrl),
             Credit("Read You", GPL_V3, readYou),
             Credit("youtubedl-android", GPL_V3, youtubedlAndroidUrl),
+            Credit("mutagen", GPL_V2, mutagenUrl),
             Credit("Termux", GPL_V3, termux),
             Credit("FFmpeg", GPL_V2, FFmpeg),
             Credit("Android Jetpack", APACHE_V2, jetpack),

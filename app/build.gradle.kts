@@ -42,7 +42,7 @@ android {
     buildFeatures { buildConfig = true }
 
     defaultConfig {
-        applicationId = "com.maheshtechnicals.sealplus"
+        applicationId = "com.jurek.mediagrabber"
         minSdk = 24
         targetSdk = 37
         versionCode = 300_000_400
@@ -87,7 +87,7 @@ android {
                     output.versionCode.set(baseAbiCode + (output.versionCode.get() ?: 0))
                 }
 
-                output.outputFileName.set("SealPlus-${baseVersionName}-${name ?: "universal"}.apk")
+                output.outputFileName.set("MediaGrabber-${baseVersionName}-${name ?: "universal"}.apk")
             }
         }
     }

@@ -23,7 +23,7 @@ import okhttp3.internal.closeQuietly
 const val AUDIO_REGEX = "(mp3|aac|opus|m4a)$"
 const val THUMBNAIL_REGEX = "\\.(jpg|png)$"
 const val SUBTITLE_REGEX = "\\.(lrc|vtt|srt|ass|json3|srv.|ttml)$"
-private const val PRIVATE_DIRECTORY_SUFFIX = ".SealPlus"
+private const val PRIVATE_DIRECTORY_SUFFIX = ".MediaGrabber"
 
 object FileUtil {
     private val TEMP_SUFFIXES =
@@ -264,7 +264,7 @@ object FileUtil {
     fun Context.getInternalTempDir() = File(filesDir, "tmp")
 
     internal fun getExternalDownloadDirectory() =
-        File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "SealPlus")
+        File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "MediaGrabber")
             .also { it.mkdir() }
 
     fun getDocsDirectory(): File =

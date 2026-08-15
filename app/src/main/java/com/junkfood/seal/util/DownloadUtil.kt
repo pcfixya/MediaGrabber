@@ -584,34 +584,15 @@ object DownloadUtil {
     }
 
     private fun YoutubeDLRequest.enableCookies(userAgentString: String): YoutubeDLRequest {
-        // ponytail: each call gets its own cookies file (not the shared "cookies.txt") so
-        // concurrent downloads don't race-overwrite each other's cookie file mid-download.
-        val cookiesFile = context.getCookiesFile("_${System.nanoTime()}")
-        refreshCookiesFile(cookiesFile)
-        return this.addOption("--cookies", cookiesFile.absolutePath).apply {
+        // Point yt-dlp at the pre-built cookies file. It is (re)written when the user
+        // generates/edits cookies (CookieProfilesPage) and on app startup (App.kt) — both
+        // off the download hot path. Do NOT read android.webkit.CookieManager here:
+        // touching the WebView provider from a download (on any thread) froze the whole UI
+        // until the app was force-restarted.
+        return this.addOption("--cookies", context.getCookiesFile().absolutePath).apply {
             if (userAgentString.isNotEmpty()) {
                 addOption("--add-header", "User-Agent:$userAgentString")
             }
-        }
-    }
-
-    /**
-     * Rebuilds the on-disk Netscape cookie file from the current in-memory WebView cookie store.
-     * Called automatically before every download when cookies are enabled.
-     */
-    fun refreshCookiesFile(cookiesFile: File = context.getCookiesFile()) {
-        cookiesFile.let { cookiesFile ->
-            getCookieListFromDatabase()
-                .mapCatching { it.toCookiesFileContent() }
-                // Use mapCatching (not onSuccess) so an IOException from writeText
-                // (e.g. disk full) is captured inside the Result and handled by the
-                // onFailure below, rather than propagating as an uncaught exception
-                // and leaving a partial/corrupt cookies.txt on disk.
-                .mapCatching { content -> FileUtil.writeContentToFile(content, cookiesFile) }
-                .onFailure { err ->
-                    Log.w(TAG, "Failed to refresh cookies file: ${err.message}")
-                    if (cookiesFile.exists()) cookiesFile.delete()
-                }
         }
     }
 
@@ -655,14 +636,9 @@ object DownloadUtil {
             )
         }
 
-        // android.webkit.CookieManager is backed by the WebView provider, which must be
-        // accessed from the main thread. This whole function runs on a background
-        // dispatcher (called from downloadVideo(), which executes entirely on
-        // Dispatchers.Default) — touching CookieManager off the main thread here was
-        // observed to wedge the main Looper on some devices/WebView versions, freezing
-        // all UI input (nav drawer, home screen — everything) until the app was
-        // force-restarted. Do every CookieManager call in one hop to Dispatchers.Main.
-        val cookies = runBlocking(Dispatchers.Main) {
+        // Only ever called off the download hot path (user tapping "generate cookies" in
+        // CookieProfilesPage, or app startup) — never during a download. See enableCookies().
+        val cookies = run {
             val manager = CookieManager.getInstance()
             // Flush in-memory cookies to the WebView's persistent store before reading.
             manager.flush()

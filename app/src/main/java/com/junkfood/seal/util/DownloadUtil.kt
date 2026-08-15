@@ -584,8 +584,11 @@ object DownloadUtil {
     }
 
     private fun YoutubeDLRequest.enableCookies(userAgentString: String): YoutubeDLRequest {
-        refreshCookiesFile()
-        return this.addOption("--cookies", context.getCookiesFile().absolutePath).apply {
+        // ponytail: each call gets its own cookies file (not the shared "cookies.txt") so
+        // concurrent downloads don't race-overwrite each other's cookie file mid-download.
+        val cookiesFile = context.getCookiesFile("_${System.nanoTime()}")
+        refreshCookiesFile(cookiesFile)
+        return this.addOption("--cookies", cookiesFile.absolutePath).apply {
             if (userAgentString.isNotEmpty()) {
                 addOption("--add-header", "User-Agent:$userAgentString")
             }
@@ -596,8 +599,8 @@ object DownloadUtil {
      * Rebuilds the on-disk Netscape cookie file from the current in-memory WebView cookie store.
      * Called automatically before every download when cookies are enabled.
      */
-    fun refreshCookiesFile() {
-        context.getCookiesFile().let { cookiesFile ->
+    fun refreshCookiesFile(cookiesFile: File = context.getCookiesFile()) {
+        cookiesFile.let { cookiesFile ->
             getCookieListFromDatabase()
                 .mapCatching { it.toCookiesFileContent() }
                 // Use mapCatching (not onSuccess) so an IOException from writeText
